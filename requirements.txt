@@ -1,0 +1,7 @@
+Django==3.2.13
+django-extensions==3.1.5
+djangorestframework==3.13.1
+drf-spectacular==0.23.1
+django-cors-headers==3.13.0
+asgiref==3.5.2
+psycopg2-binary==2.9.3
