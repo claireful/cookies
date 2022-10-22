@@ -31,12 +31,17 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'rest_framework',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    
+    'cookiesAPI',
+    'drf_spectacular',
+    'django_extensions',
 ]
 
 MIDDLEWARE = [
@@ -68,6 +73,21 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'cookies.wsgi.application'
+
+REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
+
+
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Cookies API',
+    'DESCRIPTION': 'Main service of cookies site',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+}
+
+
 
 
 # Database
