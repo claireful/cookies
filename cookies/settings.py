@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -39,12 +40,15 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     
-    'cookiesAPI',
     'drf_spectacular',
     'django_extensions',
+    'oauth2_provider',
+    'corsheaders',
+    'cookiesAPI',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -76,9 +80,10 @@ WSGI_APPLICATION = 'cookies.wsgi.application'
 
 REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+    'DEFAULT_AUTHENTIFICATION_CLASSES': [
+        ''
+    ]
 }
-
-
 
 SPECTACULAR_SETTINGS = {
     'TITLE': 'Cookies API',
@@ -88,19 +93,17 @@ SPECTACULAR_SETTINGS = {
 }
 
 
-
-
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres',
-        'USER': 'postgres',
-        'PASSWORD': 'qd;in',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'cookies',
+        'USER': 'root',
+        'PASSWORD': 'hello',
         'HOST': 'localhost',
-        'PORT': '5432',
+        'PORT': '3306',
     }
 }
 
@@ -123,6 +126,11 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+AUTH_USER_MODEL='cookiesAPI.User'
+
+LOGIN_URL='/admin/login/'
+
+CORS_ORIGIN_WHITELIST = ['http://localhost:3000']
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
@@ -147,3 +155,25 @@ STATIC_URL = '/static/'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'rich.logging.RichHandler',  # <-- this
+            'formatter': 'console',
+        },
+    },
+    'loggers': {
+        "django": {
+            "level": "ERROR",
+            "handlers": ["console"]
+        }
+    },
+    'formatters': {
+        'console': {
+            'format': "%(asctime)s %(name)-12s %(levelname)-8s %(message)s",
+        }
+    }
+}

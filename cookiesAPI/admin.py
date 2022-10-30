@@ -1,3 +1,7 @@
 from django.contrib import admin
 
-# Register your models here.
+from .models import Command, Cookie, User
+# TODO: créer des "adminUser" ?
+
+admin.site.register([Command, Cookie, User])
+
