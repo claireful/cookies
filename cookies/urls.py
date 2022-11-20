@@ -21,6 +21,10 @@ from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 from django.conf import settings
 from rest_framework.routers import DefaultRouter
 from cookiesAPI.views import UserViewSet, CookieViewSet, CommandViewSet
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+)
 
 router = DefaultRouter()
 router.register(r"user", UserViewSet, basename="user")
@@ -30,7 +34,8 @@ router.register(r"commands", CommandViewSet, basename="commands")
 urlpatterns = [
     path("", include(router.urls)),
     path('admin/', admin.site.urls),
-    path('o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
+    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     url(r'^images/(?P<path>.*)$', serve, {'document_root': 'images'}),
 
 ]

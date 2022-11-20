@@ -7,6 +7,6 @@ psycopg2-binary==2.9.3
 django-fernet-fields==0.6
 Pillow
 ipython
-django-oauth-toolkit
+djangorestframework-simplejwt
 django-cors-headers
 rich

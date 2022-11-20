@@ -2,7 +2,7 @@ from django.db import models
 from django.db.models import Sum
 import fernet_fields
 import uuid
-from django.contrib.auth.models import AbstractUser, BaseUserManager
+from django.contrib.auth.models import AbstractUser
 
 
 class UUIDModel(models.Model):
@@ -81,8 +81,4 @@ class CommandCookie(UUIDModel):
     
     def has_write_perm(self, user):
         return user.is_staff()
-
-    
-
-
 

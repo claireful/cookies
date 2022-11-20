@@ -39,4 +39,17 @@ class CommandSerializer(serializers.ModelSerializer):
         exclude = ("cookies", "user")
         extra_fields = ("total_cost_command",)
 
+class CommandSerializer(serializers.ModelSerializer):
+    basket_items = CommandCookieSerializer(many=True,)
 
+    def create(self, validated_data):
+        command_cookies = validated_data.pop("basket_items")
+        obj = super(CommandSerializer, self).create(validated_data)
+        for command_cookie in command_cookies:
+            CommandCookie.objects.create(**command_cookie, command=obj)
+        return obj
+
+    class Meta:
+        model = Command
+        exclude = ("cookies", "user")
+        extra_fields = ("total_cost_command",)
