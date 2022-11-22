@@ -27,29 +27,22 @@ class CommandSerializer(serializers.ModelSerializer):
     command_cookies = CommandCookieSerializer(many=True,)
     total_cost_command = serializers.IntegerField(read_only=True)
 
+    class Meta:
+        model = Command
+        exclude = ("cookies", "user")
+        extra_fields = ("total_cost_command",)
+
+class CommandWriteOnlySerializer(serializers.ModelSerializer):
+    command_cookies = CommandCookieSerializer(many=True,)
+
     def create(self, validated_data):
         command_cookies = validated_data.pop("command_cookies")
-        obj = super(CommandSerializer, self).create(validated_data)
+        obj = super(CommandWriteOnlySerializer, self).create(validated_data)
+        print(obj)
         for command_cookie in command_cookies:
-            CommandCookie.objects.create(**command_cookie, command=obj)
+            CommandCookie.objects.create(command=obj, cookie=command_cookie["cookie"], quantity=command_cookie["quantity"])
         return obj
 
     class Meta:
         model = Command
-        exclude = ("cookies", "user")
-        extra_fields = ("total_cost_command",)
-
-class CommandSerializer(serializers.ModelSerializer):
-    basket_items = CommandCookieSerializer(many=True,)
-
-    def create(self, validated_data):
-        command_cookies = validated_data.pop("basket_items")
-        obj = super(CommandSerializer, self).create(validated_data)
-        for command_cookie in command_cookies:
-            CommandCookie.objects.create(**command_cookie, command=obj)
-        return obj
-
-    class Meta:
-        model = Command
-        exclude = ("cookies", "user")
-        extra_fields = ("total_cost_command",)
+        fields = ["command_cookies"]

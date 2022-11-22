@@ -1,7 +1,9 @@
 from cookiesAPI.models import  User, Command, Cookie
 from rest_framework import viewsets, mixins
-from cookiesAPI.serializers import UserSerializer, CookieSerializer, CommandSerializer
+from cookiesAPI.serializers import CommandWriteOnlySerializer, UserSerializer, CookieSerializer, CommandSerializer
 from rest_framework import permissions
+from rest_framework.permissions import IsAuthenticated
+
 
 
 class AuthorizedUser(permissions.IsAuthenticated):
@@ -27,15 +29,17 @@ class CookieViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class CommandViewSet(viewsets.ModelViewSet):
-    # permission_classes = (AuthorizedUser,)
+    permission_classes = [IsAuthenticated]
     model_name = Command
-    serializer_class = CommandSerializer
+
+    def get_serializer_class(self):
+        if self.action in ["list", "retrieve"]:
+            return CommandSerializer
+        return CommandWriteOnlySerializer
     
     def get_queryset(self):
-        
         return Command.objects.filter(user=self.request.user)
 
     def perform_create(self, serializer):
-        print("fheizophfiozafhioza", self.request.user)
 
         return serializer.save(user=self.request.user)
