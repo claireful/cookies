@@ -37,7 +37,6 @@ urlpatterns = [
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     url(r'^images/(?P<path>.*)$', serve, {'document_root': 'images'}),
-
 ]
 
 if settings.DEBUG:

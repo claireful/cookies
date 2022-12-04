@@ -13,10 +13,9 @@ class UUIDModel(models.Model):
 
 # TODO: on veut que les admins puissent voir tous les users ? Comment est le panel d'administration ?
 class User(UUIDModel, AbstractUser): # TODO: voir tout ce qui est authentification !! + password 
-    first_name = fernet_fields.EncryptedCharField(max_length=30, blank=True)
-    last_name = fernet_fields.EncryptedCharField(max_length=150, blank=True)
-    email = fernet_fields.EncryptedEmailField(blank=True)
-    created_at = models.DateTimeField(auto_now=True)
+    first_name = fernet_fields.EncryptedCharField(max_length=30)
+    last_name = fernet_fields.EncryptedCharField(max_length=150)
+    email = fernet_fields.EncryptedEmailField()
     address_line = fernet_fields.EncryptedCharField(max_length=1000, blank=True)
     postal_code = fernet_fields.EncryptedCharField(max_length=12, blank=True)
     city = fernet_fields.EncryptedCharField(max_length=12, blank=True)
@@ -37,7 +36,9 @@ class Cookie(UUIDModel):
     name = models.CharField(max_length=30)
     description = models.TextField(max_length=1000, blank=True, null=True)
     price = models.FloatField()
-    photo = models.ImageField(upload_to="images/")
+    photo_main_page = models.ImageField(upload_to="images/")
+    photo_detail = models.ImageField(upload_to="images/")
+
     available = models.BooleanField(default=True)
 
     def __str__(self):
@@ -65,6 +66,8 @@ class Command(UUIDModel):
     def has_write_perm(self, user):
         return user.is_staff()
 
+    class Meta:
+        ordering = ["-created_at"]
 
 
 class CommandCookie(UUIDModel):

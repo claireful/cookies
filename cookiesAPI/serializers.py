@@ -5,8 +5,7 @@ from cookiesAPI.models import User, Command, CommandCookie, Cookie
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = '__all__'
-
+        fields = "__all__"
 
 class CookieSerializer(serializers.ModelSerializer):
     class Meta:
@@ -38,7 +37,6 @@ class CommandWriteOnlySerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         command_cookies = validated_data.pop("command_cookies")
         obj = super(CommandWriteOnlySerializer, self).create(validated_data)
-        print(obj)
         for command_cookie in command_cookies:
             CommandCookie.objects.create(command=obj, cookie=command_cookie["cookie"], quantity=command_cookie["quantity"])
         return obj

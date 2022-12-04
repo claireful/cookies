@@ -3,8 +3,8 @@ from rest_framework import viewsets, mixins
 from cookiesAPI.serializers import CommandWriteOnlySerializer, UserSerializer, CookieSerializer, CommandSerializer
 from rest_framework import permissions
 from rest_framework.permissions import IsAuthenticated
-
-
+from rest_framework import status
+from rest_framework.response import Response
 
 class AuthorizedUser(permissions.IsAuthenticated):
     def has_object_permission(self, request, view, obj):
@@ -13,13 +13,24 @@ class AuthorizedUser(permissions.IsAuthenticated):
         return obj.has_write_perm(request.user)
 
 
-class UserViewSet(mixins.CreateModelMixin, mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixins.DestroyModelMixin, viewsets.GenericViewSet):
-    permission_classes = (AuthorizedUser,)
+class UserViewSet(mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixins.DestroyModelMixin, viewsets.GenericViewSet):
     model_name = User
-    serializer_class = UserSerializer
+
+    def get_serializer_class(self, *args, **kwargs):
+        return UserSerializer
 
     def get_queryset(self):
         return User.objects.get(id=self.request.user.id)
+    
+    def create(self, serializer):
+        user = User.objects.create_user(username=self.request.data["email"],
+            email=self.request.data["email"],
+            password=self.request.data["password"],
+            first_name=self.request.data["first_name"],
+            last_name=self.request.data["last_name"],
+        )
+        user.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
     
 
 class CookieViewSet(viewsets.ReadOnlyModelViewSet):
@@ -41,5 +52,4 @@ class CommandViewSet(viewsets.ModelViewSet):
         return Command.objects.filter(user=self.request.user)
 
     def perform_create(self, serializer):
-
         return serializer.save(user=self.request.user)
