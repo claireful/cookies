@@ -5,12 +5,25 @@ from cookiesAPI.models import User, Command, CommandCookie, Cookie
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = "__all__"
+        fields = ["id", "username", "email", "first_name", "last_name", "address_line", "postal_code", "city", "country"]
+
+
+class UserCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ("first_name", "last_name", "password", "username")
+
+
+class UserUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ("first_name", "last_name", "country", "city", "postal_code", "address_line")
+
 
 class CookieSerializer(serializers.ModelSerializer):
     class Meta:
         model = Cookie
-        exclude = ["available"]
+        fields = "__all__"
 
 
 class CommandCookieSerializer(serializers.ModelSerializer):
@@ -29,7 +42,7 @@ class CommandSerializer(serializers.ModelSerializer):
     class Meta:
         model = Command
         exclude = ("cookies", "user")
-        extra_fields = ("total_cost_command",)
+        extra_fields = ("total_cost_command")
 
 class CommandWriteOnlySerializer(serializers.ModelSerializer):
     command_cookies = CommandCookieSerializer(many=True,)
